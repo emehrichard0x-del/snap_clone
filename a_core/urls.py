@@ -20,6 +20,8 @@ from a_posts.views import *
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', home_views),
-    path('post/create/', post_create_view,name='post-create')
+    path('', home_views,name='home'),
+    path('post/create/', post_create_view,name='post-create'),
+    path('post/delete/<pk>', post_delete_view,name='post-delete')
 ]
+
