@@ -7,13 +7,39 @@ from django.contrib import messages
 
 
 # Create your views here.
-def home_views(request):
-     posts = Post.objects.all()
-     return render(request, 'a_posts/home.html',{'posts' : posts})
+def home_views(request, tag=None):
+
+    if tag:
+         posts = Post.objects.filter(tags__slug=tag)
+         tag = get_object_or_404(Tag, slug=tag)
+    else:
+
+        posts = Post.objects.all()
+
+
+    categories = Tag.objects.all()
+
+    context = {
+        'posts' : posts,
+        'categories' : categories,
+        'tag' : tag
+    }
+
+    return render(request, 'a_posts/home.html',context )
 
 
 def post_create_view(request):
     return render(request, 'a_posts/post_create.html')
+
+
+
+
+
+"""
+def category_view(request,tag):
+    posts = Post.objects.filter(tags__slug=tag)
+    return render(request, 'a_posts/home.html',{'posts' : posts})
+"""
 
 
 
@@ -25,6 +51,7 @@ def post_create_view(request):
         form = PostCreateForm(request.POST)
         if form.is_valid():
             form.save()
+            form.save_m2m()
             return redirect('home')
     return render(request, 'a_posts/post_create.html', {'form' : form})
 
